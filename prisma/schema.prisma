@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User{
+  id String @id @default(uuid()) @unique
+  firstName String?
+  lastName String?
+  username String?
+  note String?
+  emai String @unique
+  password String
+  boards Board[] @relation(name: "UserToBoard")
+  own_cards Card[]
+  cards Card[] @relation(name: "UserToCard")
+  columns Column[] @relation(name: "UserToColumn")
+  comments Comment[]
+  @@map("user")
+}
+
+model Board {
+  id String @id @default(uuid()) @unique
+  title String
+  description String?
+  users User[] @relation(name: "UserToBoard")
+  columns Column[]
+  @@map("board")
+}
+
+model Column {
+  id String @id @default(uuid()) @unique
+  title String
+  board Board @relation(fields: [board_id], references: [id])
+  board_id String
+  author User @relation(fields: [author_id], references: [id], name: "UserToColumn")
+  author_id String
+  @@map("column")
+}
+
+model Card {
+  id String @id @default(uuid()) @unique
+  title String
+  description String?
+  start_date DateTime?
+  end_date DateTime?
+  created_at DateTime @default(now())
+  author_id String
+  author User @relation(fields: [author_id], references: [id])
+  users User[] @relation(name: "UserToCard")
+  comments Comment[]
+  @@map("card")
+}
+
+model Comment{
+  id String @id @default(uuid()) @unique
+  text String
+  created_at DateTime @default(now())
+  card_id String
+  card Card @relation(fields: [card_id], references: [id])
+  user_id String
+  user User @relation(fields: [user_id], references: [id])
+}
