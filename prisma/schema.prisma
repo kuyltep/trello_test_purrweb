@@ -19,7 +19,7 @@ model User{
   username String?
   role Role @default(USER)
   note String?
-  emai String @unique
+  email String @unique
   password String
   boards Board[] @relation(name: "UserToBoard")
   own_cards Card[]
