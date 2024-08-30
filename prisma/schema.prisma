@@ -7,11 +7,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User{
   id String @id @default(uuid()) @unique
   firstName String?
   lastName String?
   username String?
+  role Role @default(USER)
   note String?
   emai String @unique
   password String
@@ -64,4 +70,5 @@ model Comment{
   card Card @relation(fields: [card_id], references: [id])
   user_id String
   user User @relation(fields: [user_id], references: [id])
+  @@map("comment")
 }
